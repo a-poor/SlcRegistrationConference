@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <title>SLC Registration – Schedules</title>
+        <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+        <script>
+            // Schedule info
+            var schedule_dict = JSON.parse('{{ schedule_dict|tojson|safe }}');
+        </script>
+        <style>
+            html {
+                position: fixed;
+                background-color: whitesmoke;
+                font-family: sans-serif;
+            }
+            #holder {
+                position: fixed;
+                height: auto;
+                min-width: 850px;
+                max-width: 1500px;
+            }
+            ul {
+                position: absolute;
+                height: 99.5%;
+                width: 30%;
+                left: inherit;
+                list-style: none;
+                overflow: auto;
+                padding: 0;
+                margin: 0;
+            }
+            li {
+                background-color: rgb(225, 225, 225);
+                font-size: 16pt;
+                padding-bottom: 5%;
+                padding-top: 5%;
+                padding-left: 5%;
+            }
+            li[class=unselectedRow]:nth-child(odd) {
+                background-color: rgb(245, 245, 245);
+            }
+            /* Turning this off for now */
+/*            
+            li:hover {
+                background-color: gray;
+                color: rgb(225, 225, 225);
+            }
+*/
+            li[class=selectedRow] {
+                background-color: #fff084; /*gray;*/
+/*                color: rgb(225, 225, 225);*/
+            }
+            
+            tr {
+                padding: 5px;
+                margin: 5px;
+            }
+            
+            .liTextA {
+                background-color: #adccff;
+                border-radius: 5px;
+                padding: 5px;
+                margin-bottom: 5px;
+            }
+            .liTextB {
+                background-color: #b3ffad;
+                border-radius: 5px;
+                padding: 5px;
+                margin-bottom: 5px;
+            }
+            .liTextC {
+                background-color: #f8adff;
+                border-radius: 5px;
+                padding: 5px;
+                margin-bottom: 5px;
+            }
+            #calendar {
+                position: relative;
+                width: 70%;
+                height: 100%;
+                right: 100%;
+                left: 30%;
+            }
+            #topbar {
+                margin: 0;
+                padding: 1%;
+                width: 100%;
+                height: 20%;
+                background-color: lightgray;
+            }
+            
+            .navbutton {
+                text-align: inherit;
+            }
+            
+            /* The start of the SVG Stuff */
+            svg {
+                width: 100%;
+                height: 100%;
+            }
+            
+            .calLines {
+                fill:none;
+                stroke: rgb(100,100,100);
+                stroke-miterlimit:10;
+            }
+            .tablebg {
+                fill: rgb(225,225,225);
+            }
+            .daybg {
+                fill: rgb(100,100,100);
+            }
+            .timebg {
+                fill: rgb(200,200,200);
+            }
+            .timeText {
+                font-size:24px;
+                font-family:AirFactoryRounded-Black, AirFactoryRounded;
+                font-weight:800;
+            }
+            .dayText {
+                fill: white;
+                font-size:24px;
+                font-family:AirFactoryRounded-Black, AirFactoryRounded;
+                font-weight:800;
+            }
+            .classAbox {
+                fill: #adccff;
+                fill-opacity: 0.75;
+                stroke: rgb(100,100,100);
+            }
+            .classBbox {
+                fill: #b3ffad;
+                stroke: rgb(100,100,100);
+                fill-opacity: 0.75;
+            }
+            .classCbox {
+                fill: #f8adff;
+                stroke: rgb(100,100,100);
+                fill-opacity: 0.75;
+            }
+
+            .boxtext {
+                fill: rgb(63, 63, 63);
+                font-family: sans-serif;
+                font-size: 20px;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="topbar">
+            <a id="title"><strong>SLC Registration</strong></a>
+            <a class="navbutton" href="/">Home</a>
+            <a class="navbutton" href="/cart">Cart</a>
+        </div>
+        <h2>Your Schedules</h2>
+        <div id="holder">
+                <ul>
+                    {% if true %}
+                        {% for course in schedules_of_names %}
+                            <li id="schedule{{ loop.index0 }}" class="{% if loop.first %}selectedRow{% else %}unselectedRow{% endif %}" onclick="selectSchedule('#schedule{{ loop.index0 }}')">
+                                <table>
+                                    {% for classname, title in course.items() %}
+                                    <tr><td><span class="{{ classname }}">{{ title }}</span></td></tr>
+                                    {% endfor %}
+                                </table>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>Nothing</li>
+                    {% endif %}
+                </ul>
+            
+            <div id="calendar">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1013.84 906.89">
+                    <rect x="0" y="0" width="100%" height="100%" class="tablebg"/>
+                    <rect x="0" y="0" width="16.66%" height="100%" class="timebg"/>
+                    <rect x="0" y="0" width="100%" height="5.88%" class="daybg"/>
+
+                    <line class="calLines" id="timestart" x1="0.5" y1="0.5" x2="1013.34" y2="0.5"/>
+                    <line class="calLines" id="time8" x1="0.5" y1="53.79" x2="1013.34" y2="53.79"/>
+                    <line class="calLines" id="time9" x1="0.5" y1="107.08" x2="1013.34" y2="107.08"/>
+                    <line class="calLines" id="time10" x1="0.5" y1="160.36" x2="1013.34" y2="160.36"/>
+                    <line class="calLines" id="time11" x1="0.5" y1="213.65" x2="1013.34" y2="213.65"/>
+                    <line class="calLines" id="time12" x1="0.5" y1="266.94" x2="1013.34" y2="266.94"/>
+                    <line class="calLines" id="time13" x1="0.5" y1="320.23" x2="1013.34" y2="320.23"/>
+                    <line class="calLines" id="time14" x1="0.5" y1="373.51" x2="1013.34" y2="373.51"/>
+                    <line class="calLines" id="time15" x1="0.5" y1="426.8" x2="1013.34" y2="426.8"/>
+                    <line class="calLines" id="time16" x1="0.5" y1="480.09" x2="1013.34" y2="480.09"/>
+                    <line class="calLines" id="time17" x1="0.5" y1="533.38" x2="1013.34" y2="533.38"/>
+                    <line class="calLines" id="time18" x1="0.5" y1="586.66" x2="1013.34" y2="586.66"/>
+                    <line class="calLines" id="time19" x1="0.5" y1="639.95" x2="1013.34" y2="639.95"/>
+                    <line class="calLines" id="time20" x1="0.5" y1="693.24" x2="1013.34" y2="693.24"/>
+                    <line class="calLines" id="time21" x1="0.5" y1="746.53" x2="1013.34" y2="746.53"/>
+                    <line class="calLines" id="time22" x1="0.5" y1="799.81" x2="1013.34" y2="799.81"/>
+                    <line class="calLines" id="time23" x1="0.5" y1="853.1" x2="1013.34" y2="853.1"/>
+                    <line class="calLines" id="timeend" x1="0.5" y1="906.39" x2="1013.34" y2="906.39"/>
+
+                    <line class="calLines" id="daystart" x1="0.5" y1="0.5" x2="0.5" y2="906.39"/>
+                    <line class="calLines" id="day0" x1="169.31" y1="0.5" x2="169.31" y2="906.39"/>
+                    <line class="calLines" id="day1" x1="338.11" y1="0.5" x2="338.11" y2="906.39"/>
+                    <line class="calLines" id="day2" x1="506.92" y1="0.5" x2="506.92" y2="906.39"/>
+                    <line class="calLines" id="day3" x1="675.73" y1="0.5" x2="675.73" y2="906.39"/>
+                    <line class="calLines" id="day4" x1="844.53" y1="0.5" x2="844.53" y2="906.39"/>
+                    <line class="calLines" id="dayend" x1="1013.34" y1="0.5" x2="1013.34" y2="906.39"/>
+
+                    <text class="timeText" transform="translate(37.04 88.93)">8:00 AM</text>
+                    <text class="timeText" transform="translate(36.63 142.24)">9:00 AM</text>
+                    <text class="timeText" transform="translate(29.19 195.55)">10:00 AM</text>
+                    <text class="timeText" transform="translate(35.65 248.86)">11:00 AM</text>
+                    <text class="timeText" transform="translate(30.82 302.17)">12:00 PM</text>
+                    <text class="timeText" transform="translate(43.66 355.48)">1:00 PM</text>
+                    <text class="timeText" transform="translate(38.55 408.79)">2:00 PM</text>
+                    <text class="timeText" transform="translate(38.91 462.1)">3:00 PM</text>
+                    <text class="timeText" transform="translate(38.48 515.41)">4:00 PM</text>
+                    <text class="timeText" transform="translate(38.29 568.72)">5:00 PM</text>
+                    <text class="timeText" transform="translate(37.3 622.03)">6:00 PM</text>
+                    <text class="timeText" transform="translate(39.94 675.34)">7:00 PM</text>
+                    <text class="timeText" transform="translate(37.33 728.65)">8:00 PM</text>
+                    <text class="timeText" transform="translate(36.92 781.96)">9:00 PM</text>
+                    <text class="timeText" transform="translate(29.48 835.27)">10:00 PM</text>
+                    <text class="timeText" transform="translate(35.94 888.58)">11:00 PM</text>
+                    <text class="dayText" transform="translate(201.1 36.77)">MONDAY</text>
+                    <text class="dayText" transform="translate(371.77 36.77)">TUESDAY</text>
+                    <text class="dayText" transform="translate(521.59 36.77)">WEDNESDAY</text>
+                    <text class="dayText" transform="translate(703.6 36.77)">THURSDAY</text>
+                    <text class="dayText" transform="translate(892.16 36.77)">FRIDAY</text>
+                    <g>
+                    </g>
+                </svg>
+            </div>
+        </div>
+        
+        <script type="text/javascript">
+            
+//            function toggle() {
+//                var heart = document.getElementById('heart');
+//                var opacity = heart.style.fillOpacity;
+//                if (opacity === '0') {
+//                    heart.style.fillOpacity = 1;
+//                } else {
+//                    heart.style.fillOpacity = 0;
+//                }
+//            }
+            
+            var svg = d3.select('svg');
+            
+            function round(n, pos=2) {
+                return Math.round(n * (10**pos)) / (10**pos);
+            }
+            
+            function add_class_box(title, day, start_time, end_time, class_name) {
+                
+                var x_pos = svg.select('#day' + day).attr('x1');
+                var day_width = svg.select('#day0').attr('x1') - svg.select('#daystart').attr('x1');
+                
+                var hour_size = svg.select('#time8').attr('y1') - svg.select('#timestart').attr('y1');
+                var start_hour = Math.floor(start_time / 100);
+                var start_minute = start_time % 100;
+                var y_pos = parseFloat(svg.select('#time' + start_hour).attr('y1')) + (start_minute * (hour_size / 60));
+                
+                var duration = end_time - start_time;
+                var height = duration * (hour_size / 60);
+                
+                // Now add the box that holds the 
+                svg.select('g').append('rect')
+                    .attr('rx', 7.5)
+                    .attr('fill', 'red')
+                    .attr('class', 'class' + class_name + 'box')
+                    .attr('x', round(x_pos))
+                    .attr('y', round(y_pos))
+                    .attr('width', round(day_width))
+                    .attr('height', round(height - hour_size));
+                
+                // Now add the text
+                svg.select('g').append('text')
+                    .text(title)
+                    .attr('class', 'boxtext')
+                    .attr('text-anchor', 'middle')
+                    .attr('x', round(parseFloat(x_pos) + (day_width / 2) ))
+                    .attr('y', round(y_pos + ((height - hour_size) / 2) ));
+                return
+            }
+            
+            function clearSchedule() {
+                svg.select('g').selectAll('rect').remove();
+                svg.select('g').selectAll('text').remove();
+            }
+            
+            
+            
+            function selectSchedule(id) {
+                // Change the selection…
+                var old_selection = d3.select('.selectedRow');
+                if (old_selection) {
+                    old_selection.attr('class', 'unselectedRow');
+                }
+                var new_selection = d3.select(id);
+                new_selection.attr('class', 'selectedRow');
+                
+                // Get schedule info
+                var schedule_index = parseInt(id.slice('#schedule'.length));
+                var schedule = schedule_dict[schedule_index];
+                
+                // Clear the schedule
+                clearSchedule();
+                
+                // Populate the schedule
+                i = 0;
+                for (var course_index in schedule) {
+                    var course = schedule[course_index];
+//                    console.log(course);
+                    for (var meeting_index in course) {
+                        var meeting = course[meeting_index];
+//                        console.log(meeting);
+                        add_class_box(
+                            meeting.course_id,
+                            meeting.day,
+                            meeting.start_time,
+                            meeting.end_time,
+                            ['A', 'B', 'C'][i]
+                        );
+                    }
+                    i ++;
+                }
+            }
+            
+            selectSchedule('#schedule0');
+            
+            
+            
+            
+            
+        </script>
+    </body>
+</html>

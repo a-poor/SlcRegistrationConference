@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SLC Registration – Cart</title>
+  </head>
+  <body>
+    <div class="nav-bar">
+      {% if username %}
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/signout">Sign Out</a>
+        {{ username }}
+      {% else %}
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/signin">Sign In</a>
+        <a href="/signup">Sign Up</a>
+      {% endif %}
+    </div>
+    <h2>Cart</h2>
+    <div>
+      <form action="/schedules">
+        <button id="makeschedules" type="submit">Generate Schedules</button>
+      </form>
+      <table id="cart">
+        <tr>
+          <th>Course ID</th>
+          <th>Course Name</th>
+          <th>Instructor</th>
+          <th>Term</th>
+          <th>Course Type</th>
+          <th>Remove from Cart</th>
+        </tr>
+        {% if cart_info %}
+            {% for id, course_title, instructor, term, course_type in cart_info %}
+                <tr>
+                    <td>{{ id }}</td>
+                    <td>{{ course_title }}</td>
+                    <td>{{ instructor }}</td>
+                    <td>{{ term }}</td>
+                    <td>{{ course_type }}</td>
+                    <td><form action="/cart" method="POST"><input type="hidden" name="dropClass" value="{{ id }}"><input type="submit" value="[X]"></form></td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        {% endif %}
+        </table>
+    </div>
+    <h2>Cart Conflicts</h2>
+        <table id="conflicts">
+          <tr>
+            <th>Course 1</th>
+            <th>Course 2</th>
+            <th>Day</th>
+            <th>Course 1 Meeting Time</th>
+            <th>Course 2 Meeting Time</th>
+          </tr>
+          {% if cart_conflicts %}
+              {% for c1, c2, day, c1m, c2m in cart_conflicts %}
+                  <tr>
+                      <td>{{ c1 }}</td>
+                      <td>{{ c2 }}</td>
+                      <td>{{ day }}</td>
+                      <td>{{ c1m }}</td>
+                      <td>{{ c2m }}</td>
+                  </tr>
+              {% endfor %}
+          {% else %}
+              <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+              </tr>
+          {% endif %}
+          </table>
+    <script>
+      // Returns the cart length
+      function getTableLength() {
+        var table = document.getElementsByTagName('table')[0];
+        return table.getElementsByTagName('tr').length - 1
+      }
+      // Turns the button on or off
+      function activate_button(activation) {
+        var button = document.getElementById('makeschedules');
+        if (activation) {
+          button.textContent = 'Make Schedules';
+          button.disabled = false; 
+        } else {
+          button.textContent = 'You Need at Least 3 Courses to Make Schedules';
+          button.disabled = true;
+        }
+      }
+      if (getTableLength() < 3) {
+        activate_button(false);
+      } else {
+        activate_button(true);
+      }
+      
+
+
+      // Button for removing from cart
+
+      
+      // Eventually, the option to put classes in priority tiers
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SLC Registration – Home</title>
+  </head>
+  <body>
+    <div class="nav-bar">
+      {% if username %}
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/signout">Sign Out</a>
+        {{ username }}
+      {% else %}
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/signin">Sign In</a>
+        <a href="/signup">Sign Up</a>
+      {% endif %}
+    </div>
+    <h2>SLC Course Search</h2>
+    <form action="/results" method="POST">
+        <p class="form-field">Course Title Search: <input type="text" name="keyword"/></p>
+        <p class="form-field">Instructor Name: <input type="text" name="instructor"/></p>
+        <p class="form-field">Term: <select name="term">
+            <option value="all" selected>All</option>
+            <option value="year">Year</option>
+            <option value="fall">Fall</option>
+            <option value="spring">Spring</option>
+            </select></p>
+        <p class="form-field">Course Type: <select name="coursetype">
+            <option value="all" selected>All</option>
+            <option value="fys">First-Year Studies</option>
+            <option value="regularseminar">Regular Seminar</option>
+            <option value="lecture">Lecture</option>
+            <option value="smallseminar">Small Seminar</option>
+            <option value="program">Program</option>
+            <option value="component">Component</option>
+            </select></p>
+        <p class="form-field">Department: <select name="department">
+            <option value="all" selected>All</option>
+            <option value="ANTH">ANTH</option>
+            <option value="ARTH">ARTH</option>
+            <option value="ARTS">ARTS</option>
+            <option value="ASIA">ASIA</option>
+            <option value="BIOL">BIOL</option>
+            <option value="CHEM">CHEM</option>
+            <option value="CHIN">CHIN</option>
+            <option value="COMP">COMP</option>
+            <option value="DNCE">DNCE</option>
+            <option value="ECON">ECON</option>
+            <option value="ENVI">ENVI</option>
+            <option value="FILM">FILM</option>
+            <option value="FLMH">FLMH</option>
+            <option value="FREN">FREN</option>
+            <option value="GEOG">GEOG</option>
+            <option value="GERM">GERM</option>
+            <option value="GREE">GREE</option>
+            <option value="HIST">HIST</option>
+            <option value="ITAL">ITAL</option>
+            <option value="JAPN">JAPN</option>
+            <option value="LALE">LALE</option>
+            <option value="LANG">LANG</option>
+            <option value="LATN">LATN</option>
+            <option value="LGST">LGST</option>
+            <option value="LITR">LITR</option>
+            <option value="MATH">MATH</option>
+            <option value="MUSC">MUSC</option>
+            <option value="PHIL">PHIL</option>
+            <option value="PHYS">PHYS</option>
+            <option value="POLI">POLI</option>
+            <option value="PSYC">PSYC</option>
+            <option value="PUBP">PUBP</option>
+            <option value="RLGN">RLGN</option>
+            <option value="RUSS">RUSS</option>
+            <option value="SCMA">SCMA</option>
+            <option value="SOCI">SOCI</option>
+            <option value="SPAN">SPAN</option>
+            <option value="THEA">THEA</option>
+            <option value="WRIT">WRIT</option>
+            </select></p>
+        <p><input id="search-button" type="submit" value="Search"/></p>
+    </form>
+  </body>
+</html>

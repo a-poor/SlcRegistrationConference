@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SLC Registration – Search Results</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <style>
+      svg {
+        width: 30pt;
+      }
+      path {
+        stroke-width: 2pt;
+        fill: red;
+        stroke: red;
+        fill-opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-bar">
+      {% if username %}
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/signout">Sign Out</a>
+        {{ username }}
+      {% else %}
+        <a href="/">Home</a>
+        <a href="/cart">Cart</a>
+        <a href="/signin">Sign In</a>
+        <a href="/signup">Sign Up</a>
+      {% endif %}
+    </div>
+    <h2>Results for: {{ searchquery }}</h2>
+    <p>Commit cart changes:<button onclick="return sendform();">Enter</button></p>
+    <table>
+      <tr>
+        <th>Course ID</th>
+        <th>Course Name</th>
+        <th>Instructor</th>
+        <th>Term</th>
+        <th>Course Type</th>
+        <th>Add to Cart</th>
+      </tr>
+      {% if search_results %}
+        {% for course_id, course_name, professor_name, term, course_type in search_results %}
+          <tr>
+            <td>{{ course_id }}</td>
+            <td>{{ course_name }}</td>
+            <td>{{ professor_name }}</td>
+            <td>{{ term }}</td>
+            <td>{{ course_type }}</td>
+            <td>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" enable-background="new 0 0 50 50" class="mozwebext">
+                <a onclick="return toggle('{{ course_id }}')">
+                  <path d="M25,39.7l-0.6-0.5C11.5,28.7,8,25,8,19c0-5,4-9,9-9c4.1,0,6.4,2.3,8,4.1c1.6-1.8,3.9-4.1,8-4.1c5,0,9,4,9,9 c0,6-3.5,9.7-16.4,20.2L25,39.7z" id="{{ course_id }}"/>
+                </a>
+              </svg>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      {% endif %}
+    </table>
+    <form id="modcart" action="/cart" method="POST">
+      <input type="hidden" name="add" value="" id="form_add">
+      <input type="hidden" name="del" value="" id="form_del">
+    </form>
+    <script>
+      // Script for managing favorited courses
+      var cart_add = new Set([]);
+      var cart_del = new Set([]);
+
+      function add_or_del(id) {
+        if (cart_add.has(id)) {
+          console.log('Adding: ' + id)
+          cart_add.delete(id);
+          cart_del.add(id);
+        } else if (cart_del.has(id)) {
+          console.log('Adding: ' + id)
+          cart_del.delete(id);
+          cart_add.add(id);
+        } else {
+          cart_add.add(id);
+        }
+      }
+
+      function toggle(id) {
+          var heart = document.getElementById(id);
+          if (heart) {
+            if (heart.style.fillOpacity === '1') {
+                heart.style.fillOpacity = 0;
+            } else {
+                heart.style.fillOpacity = 1;
+            }
+            add_or_del(id);
+          }
+      }
+      function sendform() {
+          var form = document.getElementById('modcart');
+          var form_add = document.getElementById('form_add');
+          var form_del = document.getElementById('form_del');
+          form_add.value = '' + Array.from(cart_add).join(',');
+          form_del.value = '' + Array.from(cart_del).join(',');
+          form.submit();
+      }
+
+      
+      
+      var existing_cart='{{ existing_cart }}'.split(',');
+      for (var i in existing_cart) {
+        toggle(existing_cart[i]);
+      }
+    </script>
+  </body>
+</html>
