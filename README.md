@@ -3,13 +3,17 @@
 by Austin Poor
 
 ## Description
-This is my solution help SLC students stay on top of their course registration. It allows them to search for courses and add them to their cart, where they can see conflicts between courses and generate possible schedules based on their classes.
+This is my solution help Sarah Lawrence College students stay on top of their course registration – as the conference project for my Databases course. (At SLC, a conference project is sort of like a year- or semester-long mini-senior-thesis.)
+
+The current method for registration requires students to collate the information from different sources to find course description, professor information, meeting times, and professor interview times. ([Think the scene in the movie Day at the Races where Chico Marx is selling Groucho Marx the books.](https://www.youtube.com/watch?v=DqypaqLEfM8))
+
+My solution allows students to search for courses and add them to a cart, where they can see conflicts between courses and generate possible schedules based on their classes.
 
 
 ## Instructions to Run the Program
 * Navigate to the project folder
-* Make sure you have python 3 installed as well as the flask library
-    * Alternatively, activate the virtual environment with: `source venv/bin/activate`
+* Make sure you have Python 3 installed as well as the Flask library
+    * rewquirements.txt included in the repo
 * Run the flask app with: `python flask_app.py`
 * The terminal should print something like this:
 ``` 
