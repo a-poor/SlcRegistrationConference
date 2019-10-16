@@ -1,7 +1,8 @@
 """
+SLC Flask Registration
+Created by Austin Poor
 
-NOTES TO SELF:
-    
+Repo: https://github.com/a-poor/SlcRegistrationConference
 """    
 
     
@@ -25,7 +26,7 @@ def index():
         username = None
     else:
         username = session['username']
-    return render_template('index2.html', username=username)
+    return render_template('index.html', username=username)
 
 @app.route('/results', methods = ['POST', 'GET'])
 def result():
@@ -42,7 +43,7 @@ def result():
     form_response = request.form
     keyword = form_response['keyword']
     search_results = rdb.pull_courses(form_response)
-    return render_template("results2.html", keyword=keyword, search_results=search_results, username=username, existing_cart=','.join(existing_cart))
+    return render_template("results.html", keyword=keyword, search_results=search_results, username=username, existing_cart=','.join(existing_cart))
 
 
 @app.route('/cart', methods=['POST', 'GET'])
@@ -91,15 +92,15 @@ def cart():
                 rdb.del_class_from_cart(username, c)
     course_info = sorted([rdb.get_course_info(id)[0] for id in cart])
     cart_conflicts = rdb.formatted_conflicts(cart)
-    return render_template('cart2.html', username=username, cart_info=course_info, cart_conflicts=cart_conflicts)
+    return render_template('cart.html', username=username, cart_info=course_info, cart_conflicts=cart_conflicts)
 
 @app.route('/signin')
 def signin():
-    return render_template('signin2.html')
+    return render_template('signin.html')
 
 @app.route('/signup')
 def signup():
-    return render_template('signup2.html')
+    return render_template('signup.html')
 
 @app.route('/signout')
 def signout():
@@ -167,10 +168,9 @@ def schedules():
             'liTextC': s[2][0]['course_title']
          } for s in schedules]
 
-    return render_template('schedules3.html', schedules_of_names=schedules_of_names,  schedule_dict=schedules)
+    return render_template('schedules.html', schedules_of_names=schedules_of_names,  schedule_dict=schedules)
 
 
 if __name__ == '__main__':
     app.run(debug = True)
-    pass
 
